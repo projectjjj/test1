@@ -14,8 +14,7 @@ public class MemoController {
 
     @PostMapping("/api/post")
     public Memo postMemo(@RequestBody MemoDto memoDto) {
-        Memo memo = new Memo(memoDto);
-        return repository.save(memo);
+        return memoService.postMemo(memoDto);
     }
 
     @GetMapping("/api/post")
@@ -28,7 +27,12 @@ public class MemoController {
         return memoService.getMemos(id);
     }
 
-    @DeleteMapping("/api/memos/{id}")
+    @PostMapping("/api/post/{id}/reply")
+    public Reply postReply(@PathVariable Long id,@RequestBody ReplyDto replyDto) {
+        return memoService.postReply(replyDto);
+    }
+
+    @DeleteMapping("/api/post/{id}")
     public Long modifyMemo(@PathVariable Long id) {
         memoService.deleteMemo(id);
         return id;

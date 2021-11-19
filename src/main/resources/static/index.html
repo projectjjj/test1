@@ -89,16 +89,18 @@
                 success: function (response) {
                     console.log(response)
                     for (i=0;i<response.length; i++) {
-                        let view = response[i]
+                        let view = response[i];
+
                         let html = `
-                    <tr>
-                      <th scope="row">-</th>
-                      <td>${view.title}</td>
-                      <td>1</td>
-                      <td>${view.createdAt}</td>
-                      </tr>
-                    `
+                            <tr>
+                              <th scope="row">-</th>
+                              <td><a href="view.html?id=${view.id}">${view.title}</a></td>
+                              <td>1</td>
+                              <td>${view.createdAt}</td>
+                              </tr>
+                            `
                         $('#list-post').append(html);
+
                     }
 
                 }

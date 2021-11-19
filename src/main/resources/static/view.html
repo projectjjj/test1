@@ -1,4 +1,3 @@
-```bash
 <!Doctype html>
 <html lang="ko" xmlns="http://www.w3.org/1999/html">
 
@@ -45,7 +44,35 @@
         }
     </style>
     <script>
-
+        let url = window.location.search
+        let params = new URLSearchParams(url);
+        let id = params.get('id');
+        console.log(id);
+        $.ajax({
+            type: 'GET',
+            url: `/api/post/${id}`,
+            success: function (response) {
+                console.log(response)
+                let title = response.title;
+                let content = response.content;
+                $('#title').append(title);
+                $('#content').append(content);
+            }
+        })
+        function setArticleComment() {
+            let comment= $('#comment').val();
+            let data = {"comment": comment, "memoid":id }
+            $.ajax ({
+                type:"POST",
+                url:`/api/post/${id}/reply`,
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    alert('메시지 작성 완료!.');
+                    window.location.reload();
+                }
+            })
+        }
     </script>
 
 </head>
@@ -57,11 +84,11 @@
         <hr class="my-4">
     </div>
     <div class="form-group">
-        <label for="title">제목</label>
+        <label for="title" id="title"></label>
         <div id="title"></div>
     </div>
     <div class="form-group">
-        <label for="content">간단한 내용</label>
+        <label for="content" id="content"></label>
         <div id="content"></div>
     </div>
     <hr/>
@@ -75,4 +102,3 @@
 </body>
 
 </html>
-```
