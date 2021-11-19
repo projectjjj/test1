@@ -8,17 +8,19 @@ import javax.persistence.*;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Memo extends Timestamped{
+public class Reply extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(nullable = false)
-    private String title;
-    @Column(nullable = false)
-    private String content;
 
-    public Memo(MemoDto memoDto){
-        this.title = memoDto.getTitle();
-        this.content = memoDto.getContent();
+    @Column(nullable = false)
+    private String reply;
+
+    @ManyToOne
+    @JoinColumn(name = "memo", nullable = false)
+    private Memo memo;
+
+    public Reply(ReplyDto replyDto){
+        this.reply = replyDto.getReply();
     }
 }
