@@ -20,6 +20,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
+    <script src="js.js"></script>
 
     <!-- 구글폰트 -->
     <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
@@ -48,6 +49,106 @@
             border: black solid;
             border-radius: 5px;
         }
+
+       .bootstrap-tagsinput {
+           background-color: #fff;
+           border: 1px solid #ccc;
+           box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+           display: inline-block;
+           padding: 4px 6px;
+           color: #555;
+           vertical-align: middle;
+           border-radius: 4px;
+           width: 100%;
+           line-height: 22px;
+           cursor: text;
+       }
+        .bootstrap-tagsinput input {
+            border: none;
+            box-shadow: none;
+            outline: none;
+            background-color: transparent;
+            padding: 0 6px;
+            margin: 0;
+            width: auto;
+            max-width: inherit;
+        }
+        .bootstrap-tagsinput.form-control input::-moz-placeholder {
+            color: #777;
+            opacity: 1;
+        }
+        .bootstrap-tagsinput.form-control input:-ms-input-placeholder {
+            color: #777;
+        }
+        .bootstrap-tagsinput.form-control input::-webkit-input-placeholder {
+            color: #777;
+        }
+        .bootstrap-tagsinput input:focus {
+            border: none;
+            box-shadow: none;
+        }
+        .bootstrap-tagsinput .badge {
+            margin: 2px 0;
+            padding:5px 8px;
+        }
+        .bootstrap-tagsinput .badge [data-role="remove"] {
+            margin-left: 8px;
+            cursor: pointer;
+        }
+        .bootstrap-tagsinput .badge [data-role="remove"]:after {
+            content: "×";
+            padding: 0px 4px;
+            background-color:rgba(0, 0, 0, 0.1);
+            border-radius:50%;
+            font-size:13px
+        }
+        .bootstrap-tagsinput .badge [data-role="remove"]:hover:after {
+
+            background-color:rgba(0, 0, 0, 0.62);}
+        .bootstrap-tagsinput .badge [data-role="remove"]:hover:active {
+            box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+        }
+
+        .tt-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 1000;
+            display: none;
+            float: left;
+            min-width: 160px;
+            padding: 5px 0;
+            margin: 2px 0 0;
+            list-style: none;
+            font-size: 14px;
+            background-color: #ffffff;
+            border: 1px solid #cccccc;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+            background-clip: padding-box;
+            cursor: pointer;
+        }
+
+        .tt-suggestion {
+            display: block;
+            padding: 3px 20px;
+            clear: both;
+            font-weight: normal;
+            line-height: 1.428571429;
+            color: #333333;
+            white-space: nowrap;
+        }
+
+        .tt-suggestion:hover,
+        .tt-suggestion:focus {
+            color: #ffffff;
+            text-decoration: none;
+            outline: 0;
+            background-color: #428bca;
+        }
+
     </style>
     <script>
         function openClose() {
@@ -68,7 +169,8 @@
         function postingArticle() {
             let title = $('#title').val();
             let content = $('#content').val();
-            let data = {"title": title, "content":content }
+            let tags = $('#tags').val();
+            let data = {"title": title, "content":content, "tag":tags }
             $.ajax ({
                 type:"POST",
                 url:"/api/post",
@@ -89,6 +191,7 @@
                     for (i=0;i<response.length; i++) {
                         let view = response[i];
                         let reply = response[i]["replyList"];
+                        let tag = response[i]["tagList"][0]["tag"];
                         let replycount = reply.length;
 
                         let html = `
@@ -96,6 +199,7 @@
                               <th scope="row">-</th>
                               <td><a href="view.html?idx=${view.idx}">${view.title}</a></td>
                               <td>${replycount}</td>
+                              <td>${tag}</td>
                               <td>${view.createdAt}</td>
                               </tr>
                             `
@@ -106,6 +210,18 @@
                 }
             })
 
+        }
+        function getArticles() {
+            let tag = $("searchTag").val();
+            $.ajax({
+                type: 'POST',
+                url: `/api/search`,
+                contentType: "application/json",
+                data: JSON.stringify(searchTag),
+                success: function (response) {
+                    console.log(response)
+                        }
+            })
         }
     </script>
 </head>
@@ -128,6 +244,10 @@
                 <label for="content">간단한 내용</label>
                 <textarea id="content" class="form-control" rows="2"></textarea>
             </div>
+<!--            태그-->
+            <div class="form-group">
+                <input type="text" value="" id="tags" data-role="tagsinput" placeholder="tags" />
+            </div>
             <input id="content" class="form-control" placeholder="" hidden>
             <button type="button" class="btn btn-primary" onclick="postingArticle()">기사저장</button>
         </div>
@@ -138,12 +258,19 @@
             <th scope="col">#</th>
             <th scope="col">제목</th>
             <th scope="col">댓글수</th>
+            <th scope="col">태그</th>
             <th scope="col">등록일자</th>
         </tr>
         </thead>
         <tbody id="list-post">
         </tbody>
     </table>
+    <div class="input-group mb-3" style="width: 20%;margin: 0% 30%;">
+        <input type="text" class="form-control" placeholder="태그" aria-label="태그" aria-describedby="basic-addon2" id="searchTag">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" onclick="getArticles()">검색</button>
+        </div>
+    </div>
 </div>
 
 </body>

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -11,6 +12,7 @@ public class MemoService {
 
     private final MemoRepository memoRepository;
     private final ReplyRepository replyRepository;
+    private final TagRepository tagRepository;
 
     public void deleteMemo(Long id) {
         memoRepository.deleteById(id);
@@ -22,7 +24,9 @@ public class MemoService {
 
     public Memo postMemo(MemoDto memoDto){
         Memo memo = new Memo(memoDto);
-        memoRepository.save(memo);
+        Memo memo2 = memoRepository.save(memo);
+        Tag tag = new Tag(memoDto, memo2);
+        tagRepository.save(tag);
         return memo;
     }
     @Transactional

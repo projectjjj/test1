@@ -27,6 +27,9 @@ public class Memo extends Timestamped{
     @OneToMany(mappedBy = "memo")
     private List<Reply> replyList;
 
+    @OneToMany(mappedBy = "memo")
+    private List<Tag> tagList;
+
     //생성자
     public Memo(MemoDto memoDto){
         this.title = memoDto.getTitle();

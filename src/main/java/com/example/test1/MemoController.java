@@ -25,6 +25,11 @@ public class MemoController {
         return repository.findAll();
     }
 
+    @PostMapping("/api/search")
+    public List<Memo> getMemos(@RequestBody SearchDto searchDto) {
+        return repository.findAllByTagList(searchDto.getTag());
+    }
+
     @GetMapping("/api/post/{id}")
     public Memo getPost(@PathVariable Long id){
         return memoService.getMemos(id);

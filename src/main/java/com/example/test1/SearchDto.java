@@ -5,8 +5,6 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class MemoDto {
-    private String title;
-    private String content;
+public class SearchDto {
     private String tag;
 }
