@@ -12,7 +12,6 @@ public class MemoService {
     private final MemoRepository memoRepository;
     private final ReplyRepository replyRepository;
 
-    @Transactional
     public void deleteMemo(Long id) {
         memoRepository.deleteById(id);
     }
@@ -26,11 +25,13 @@ public class MemoService {
         memoRepository.save(memo);
         return memo;
     }
-
-    public Reply postReply(ReplyDto replyDto) {
-        Reply reply = new Reply(replyDto);
-        replyRepository.save(reply);
-        return reply;
+    @Transactional
+    public Reply postReply(ReplyDto replyDto) { //반환값 Reply에서 void로 수정
+        Memo memo = memoRepository.findById(replyDto.getIdx()).orElseThrow(
+                () -> new NullPointerException("해당 게시글이 없습니다")
+        );
+        Reply reply = new Reply(replyDto,memo);
+        return replyRepository.save(reply);
     }
 
 }

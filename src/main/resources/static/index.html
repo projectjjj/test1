@@ -62,8 +62,6 @@
             }
         }
 
-        let newmemo;
-        //방금 쓴 글을 보이게 하고싶었는데 실패 !!!! ㅠㅠ
         $(document).ready(function () {
             read();
         })
@@ -90,12 +88,14 @@
                     console.log(response)
                     for (i=0;i<response.length; i++) {
                         let view = response[i];
+                        let reply = response[i]["replyList"];
+                        let replycount = reply.length;
 
                         let html = `
                             <tr>
                               <th scope="row">-</th>
-                              <td><a href="view.html?id=${view.id}">${view.title}</a></td>
-                              <td>1</td>
+                              <td><a href="view.html?idx=${view.idx}">${view.title}</a></td>
+                              <td>${replycount}</td>
                               <td>${view.createdAt}</td>
                               </tr>
                             `

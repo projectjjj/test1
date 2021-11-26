@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
+@AllArgsConstructor //튜터님 코드와 비교후 추가
 @Getter
 @Setter
 @Entity
@@ -14,11 +16,17 @@ import javax.persistence.*;
 public class Memo extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long idx;
+
     @Column(nullable = false)
     private String title;
+
     @Column(nullable = false)
     private String content;
+
+    @OneToMany(mappedBy = "memo")
+    private List<Reply> replyList;
+
     //생성자
     public Memo(MemoDto memoDto){
         this.title = memoDto.getTitle();

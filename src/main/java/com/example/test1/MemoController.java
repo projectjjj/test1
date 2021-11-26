@@ -1,9 +1,12 @@
 package com.example.test1;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.graalvm.compiler.options.OptionType.User;
 
 @RequiredArgsConstructor
 @RestController
@@ -28,13 +31,13 @@ public class MemoController {
     }
 
     @PostMapping("/api/post/{id}/reply")
-    public Reply postReply(@PathVariable Long id,@RequestBody ReplyDto replyDto) {
-        return memoService.postReply(replyDto);
+    public void postReply(@PathVariable Long id,@RequestBody ReplyDto replyDto) {
+        memoService.postReply(replyDto);
     }
 
-    @DeleteMapping("/api/post/{id}")
-    public Long modifyMemo(@PathVariable Long id) {
-        memoService.deleteMemo(id);
-        return id;
-    }
+//    @DeleteMapping("/api/post/{id}")
+//    public Long modifyMemo(@PathVariable Long id) {
+//        memoService.deleteMemo(id);
+//        return id;
+//    }
 }

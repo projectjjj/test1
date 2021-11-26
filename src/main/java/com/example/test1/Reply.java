@@ -1,10 +1,16 @@
 package com.example.test1;
 
+import com.example.test1.Memo;
+import com.example.test1.ReplyDto;
+import com.example.test1.Timestamped;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
+@Setter
 @Getter
 @Entity
 @NoArgsConstructor
@@ -16,11 +22,13 @@ public class Reply extends Timestamped {
     @Column(nullable = false)
     private String reply;
 
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "memo", nullable = false)
+    @JoinColumn(name = "memoId", nullable = false)
     private Memo memo;
 
-    public Reply(ReplyDto replyDto){
+    public Reply(ReplyDto replyDto, Memo memo) {
         this.reply = replyDto.getReply();
+        this.memo = memo;
     }
 }
